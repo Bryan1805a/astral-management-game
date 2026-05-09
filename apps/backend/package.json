@@ -15,6 +15,10 @@
     "prisma": "^7.8.0"
   },
   "dependencies": {
-    "@prisma/client": "^7.8.0"
+    "@fastify/cors": "^11.2.0",
+    "@prisma/client": "^7.8.0",
+    "bcryptjs": "^3.0.3",
+    "fastify": "^5.8.5",
+    "jsonwebtoken": "^9.0.3"
   }
 }
