@@ -4,10 +4,41 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// --- PHASE 1: AUTH & IDENTITY ---
+
+model Player {
+  id            String   @id @default(uuid())
+  username      String   @unique
+  email         String   @unique
+  password_hash String
+  createdAt     DateTime @default(now())
+  
+  // Relations (A player can have many games)
+  games         Game[]   @relation("PlayerGames")
+  
+  @@map("players") // This tells Prisma to name the actual Postgres table "players" lowercase
+}
+
+// --- PHASE 1: GAME SESSION ---
+
+model Game {
+  id           String   @id @default(uuid())
+  name         String
+  current_tick Int      @default(0)
+  status       String   @default("lobby") // lobby, running, finished
+  tick_locked  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  // Relations (Who owns/created this game session)
+  playerId     String
+  player       Player   @relation("PlayerGames", fields: [playerId], references: [id])
+
+  @@map("games")
 }
