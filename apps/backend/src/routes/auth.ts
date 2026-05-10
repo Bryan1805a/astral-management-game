@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import {prisma} from '../lib/prisma';
 import { request } from 'node:http';
+import { error } from 'node:console';
 
 // Create a Fastify plugin contains routes
 export async function auth_routes(server: FastifyInstance) {
@@ -39,4 +40,32 @@ export async function auth_routes(server: FastifyInstance) {
             return reply.status(500).send({error: "Internal Server Error"});
         }
     });
-};
+
+    // Login endpoint
+    server.post("/auth/login", async (request, reply) => {
+        try {
+            const {email, password} = request.body as any;
+
+            // Find the player
+            const player = await prisma.player.findUnique({where: {email}});
+            if (!player) {
+                return reply.status(401).send({error: "Invalid credentials."});
+            }
+
+            // Verify the password
+            const is_valid = await bcrypt.compare(password, player.password_hash);
+            if (!is_valid) {
+                return reply.status(401).send({error: "Invalid credentials."});
+            }
+
+            // Generate the JWT wristband
+            const secret = process.env.JWT_SECRET || "Fallback_secret";
+            const token = jwt.sign({id: player.id, username: player.username}, secret, {expiresIn: "7d"});
+
+            return reply.send({message: "Login successful", token});
+        } catch (error) {
+            server.log.error(error);
+            return reply.status(500).send({error: "Internal Server Error"});
+        }
+    });
+}
