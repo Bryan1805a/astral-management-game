@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,25 +15,90 @@ model Player {
   password_hash String
   createdAt     DateTime @default(now())
   
-  // Relations (A player can have many games)
-  games         Game[]   @relation("PlayerGames")
+  games         Game[]      @relation("PlayerGames")
+  colonies      Colony[]    // A player can own many colonies
+  tick_events   TickEvent[] // Events specific to this player
   
-  @@map("players") // This tells Prisma to name the actual Postgres table "players" lowercase
+  @@map("players") 
 }
-
-// --- PHASE 1: GAME SESSION ---
 
 model Game {
   id           String   @id @default(uuid())
   name         String
   current_tick Int      @default(0)
-  status       String   @default("lobby") // lobby, running, finished
+  status       String   @default("lobby")
   tick_locked  Boolean  @default(false)
   createdAt    DateTime @default(now())
 
-  // Relations (Who owns/created this game session)
   playerId     String
   player       Player   @relation("PlayerGames", fields: [playerId], references: [id])
+  
+  colonies     Colony[] // All colonies inside this game session
+  tick_events  TickEvent[] // Log of everything that happens in this game
 
   @@map("games")
+}
+
+// --- PHASE 2: CORE GAMEPLAY ---
+
+model Planet {
+  id       String   @id @default(uuid())
+  name     String
+  type     String   // e.g., "Rocky", "Gas Giant"
+  
+  colonies Colony[] // A planet can have multiple players' colonies on it
+
+  @@map("planets")
+}
+
+model Colony {
+  id         String   @id @default(uuid())
+  population Int      @default(0)
+  morale     Float    @default(1.0)
+  
+  // It will store data like: {"food": 500, "steel": 200}
+  resources  Json     @default("{}") 
+
+  // Foreign Keys (Linking data together)
+  gameId     String
+  game       Game     @relation(fields: [gameId], references: [id])
+  
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id])
+  
+  planetId   String
+  planet     Planet   @relation(fields: [planetId], references: [id])
+  
+  buildings  Building[]
+
+  @@map("colonies")
+}
+
+model Building {
+  id             String   @id @default(uuid())
+  type           String   // e.g., "FARM", "MINE", "SMELTER"
+  status         String   @default("constructing") // running, paused, constructing
+  current_recipe String?  // Nullable, as it might not be producing anything
+  finish_tick    Int?     // The game tick when construction/production finishes
+  efficiency     Float    @default(1.0)
+
+  colonyId       String
+  colony         Colony   @relation(fields: [colonyId], references: [id], onDelete: Cascade)
+
+  @@map("buildings")
+}
+
+model TickEvent {
+  id         String   @id @default(uuid())
+  tick       Int
+  event_type String   // e.g., "PRODUCTION_COMPLETE", "CRISIS"
+  payload    Json     // Detailed event data
+
+  gameId     String
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  playerId   String?  // Nullable because some events (like a global market crash) affect everyone
+  player     Player?  @relation(fields: [playerId], references: [id])
+
+  @@map("tick_events")
 }
