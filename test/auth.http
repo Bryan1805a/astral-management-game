@@ -1,0 +1,20 @@
+### Register a New Player
+POST http://localhost:10000/auth/register
+Content-Type: application/json
+
+{
+  "username": "Admin",
+  "email": "admin123@gmail.com",
+  "password": "123"
+}
+
+###
+
+### Login to the Game
+POST http://localhost:10000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin123@gmail.com",
+  "password": "123"
+}
