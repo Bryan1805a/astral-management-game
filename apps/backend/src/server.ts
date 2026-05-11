@@ -3,12 +3,14 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import {prisma} from './lib/prisma';
 import {auth_routes} from './routes/auth';
+import {colony_routes} from './routes/colony';
 
 const server = Fastify({logger: true});
 server.register(cors, {origin: true});
 
 // Register the modular route files
 server.register(auth_routes);
+server.register(colony_routes);
 
 server.get('/ping', async (request, reply) => {
     try {
