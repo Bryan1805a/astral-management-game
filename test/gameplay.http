@@ -1,0 +1,22 @@
+### --------------------------------------------------------
+### 2. Run the Seed Route (PASTE YOUR TOKEN FROM ABOVE HERE)
+### --------------------------------------------------------
+POST http://localhost:10000/dev/seed
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYwZWE4NDEwLTJmNzEtNGM4OC05YTkyLTdkMjgyNTgzYTI0OSIsInVzZXJuYW1lIjoiQWRtaW4iLCJpYXQiOjE3Nzg1MDI4MDQsImV4cCI6MTc3OTEwNzYwNH0.D7V3AbjmYSWRquCGLdaQINSYdcF4bo_Ebwcmbp6s7_0
+
+### --------------------------------------------------------
+### 3. Check your Colony Status (PASTE COLONY ID & TOKEN)
+### --------------------------------------------------------
+GET http://localhost:10000/colonies/59b0a543-c34c-4467-aa7d-5d3219c9ee25
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYwZWE4NDEwLTJmNzEtNGM4OC05YTkyLTdkMjgyNTgzYTI0OSIsInVzZXJuYW1lIjoiQWRtaW4iLCJpYXQiOjE3Nzg1MDI4MDQsImV4cCI6MTc3OTEwNzYwNH0.D7V3AbjmYSWRquCGLdaQINSYdcF4bo_Ebwcmbp6s7_0
+
+### --------------------------------------------------------
+### 4. Build a Farm! (PASTE COLONY ID & TOKEN)
+### --------------------------------------------------------
+POST http://localhost:10000/colonies/59b0a543-c34c-4467-aa7d-5d3219c9ee25/build
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYwZWE4NDEwLTJmNzEtNGM4OC05YTkyLTdkMjgyNTgzYTI0OSIsInVzZXJuYW1lIjoiQWRtaW4iLCJpYXQiOjE3Nzg1MDI4MDQsImV4cCI6MTc3OTEwNzYwNH0.D7V3AbjmYSWRquCGLdaQINSYdcF4bo_Ebwcmbp6s7_0
+
+{
+    "type": "FARM"
+}
