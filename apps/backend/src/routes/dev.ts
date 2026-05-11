@@ -38,7 +38,7 @@ export async function dev_routes(server: FastifyInstance) {
             });
 
             return reply.status(201).send({
-                message: "Dev environment seeded successfilly.",
+                message: "Dev environment seeded successfully.",
                 colonyId: colony.id,
                 planetName: planet.name
             });
