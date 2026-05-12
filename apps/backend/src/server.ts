@@ -5,6 +5,7 @@ import {prisma} from './lib/prisma';
 import {auth_routes} from './routes/auth';
 import {colony_routes} from './routes/colony';
 import {dev_routes} from './routes/dev';
+import {game_routes} from './routes/game';
 
 const server = Fastify({logger: true});
 server.register(cors, {origin: true});
@@ -13,6 +14,7 @@ server.register(cors, {origin: true});
 server.register(auth_routes);
 server.register(colony_routes);
 server.register(dev_routes);
+server.register(game_routes);
 
 server.get('/ping', async (request, reply) => {
     try {
